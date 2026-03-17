@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  TP2 – Formulaire d'inscription complet                      ║
+  ║  Module C3 – HTML5 & CSS3                                    ║
+  ║  Auteure : Nada Elhattab – na_elhattab                     ║
+  ║  ENSET Mohammedia                                            ║
+  ╚══════════════════════════════════════════════════════════════╝
+
+  CONCEPTS HTML5 UTILISÉS DANS CE TP :
+  ─────────────────────────────────────
+  ✔ <form>             → conteneur du formulaire
+  ✔ <fieldset>         → regroupe des champs liés (BONUS)
+  ✔ <legend>           → titre d'un fieldset
+  ✔ <label>            → texte associé à un champ (accessibilité)
+  ✔ <input type="text">       → champ texte simple
+  ✔ <input type="email">      → email avec validation automatique
+  ✔ <input type="tel">        → téléphone
+  ✔ <input type="date">       → sélecteur de date
+  ✔ <input type="password">   → mot de passe masqué
+  ✔ <input type="radio">      → choix unique (genre)
+  ✔ <input type="checkbox">   → choix multiple (centres d'intérêt)
+  ✔ <input type="file">       → upload de fichier
+  ✔ <select> + <option>       → liste déroulante (pays)
+  ✔ <datalist>                → suggestions pour un input texte
+  ✔ <textarea>                → zone de texte multi-lignes
+  ✔ required                  → champ obligatoire
+  ✔ pattern="..."             → validation par expression régulière
+  ✔ minlength / maxlength     → longueur min/max
+  ✔ min / max                 → valeurs min/max (pour la date)
+  ✔ autocomplete="..."        → aide le navigateur à auto-remplir
+  ✔ placeholder="..."         → texte d'exemple dans le champ
+  ✔ aria-describedby          → accessibilité : lie un champ à son aide
+-->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <!--
+    charset="UTF-8" → encodage des caractères.
+    Obligatoire pour afficher correctement les accents (é, à, ç...)
+  -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    viewport → rend la page responsive (adaptée aux mobiles).
+    Sans cette ligne, le site apparaît tout petit sur téléphone.
+  -->
+
+  <title>TP2 – Formulaire d'inscription | na_elhattab</title>
+  <meta name="description" content="TP2 HTML5 – Formulaire d'inscription complet avec validation native.">
+
+  <!-- Google Fonts : on importe deux polices depuis Internet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!--
+  ══════════════════════════════════════════════════════════════
+    STYLE CSS – tout entre <style> et </style>
+    Le CSS décrit l'APPARENCE de chaque élément HTML.
+    Syntaxe :  sélecteur { propriété: valeur; }
+    Exemple :  body { background: #fff; color: #333; }
+  ══════════════════════════════════════════════════════════════
+  -->
+  <style>
+
+    /* ── VARIABLES CSS ──────────────────────────────────────────
+       On définit les couleurs ici une seule fois.
+       On les réutilise partout avec var(--nom).
+       Si on veut changer une couleur, on la modifie juste ici !
+    ─────────────────────────────────────────────────────────── */
+    :root {
+      --bg:          #faf8f5;       /* fond page : blanc cassé chaud    */
+      --white:       #ffffff;       /* blanc pur                        */
+      --coral:       #e8603c;       /* couleur principale : corail      */
+      --coral-light: #fdf0ec;       /* corail très pâle (fond hover)    */
+      --coral-dark:  #c94e2e;       /* corail foncé (hover bouton)      */
+      --green:       #2d9e6b;       /* vert succès                      */
+      --green-light: #edfbf4;       /* vert très pâle                   */
+      --red:         #dc2626;       /* rouge erreur                     */
+      --red-light:   #fef2f2;       /* rouge très pâle                  */
+      --text:        #2c2416;       /* texte principal : brun foncé     */
+      --text2:       #6b5e4e;       /* texte secondaire : brun moyen    */
+      --text3:       #a8967e;       /* texte désactivé : brun clair     */
+      --border:      #e8e0d4;       /* couleur des bordures             */
+      --border-focus:#e8603c;       /* bordure quand champ actif        */
+      --radius:      10px;          /* arrondi des coins                */
+      --radius-lg:   16px;          /* grand arrondi                    */
+      --shadow:      0 2px 8px rgba(44,36,22,0.08), 0 8px 24px rgba(44,36,22,0.05);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────────
+       Supprime les marges et paddings par défaut des navigateurs.
+       Chaque navigateur (Chrome, Firefox...) a ses propres styles
+       par défaut. Ce reset repart de zéro.
+    ─────────────────────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box; /* la taille inclut les bordures et paddings */
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── BODY : style global de la page ─────────────────────── */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      min-height: 100vh; /* hauteur minimum = 100% de la fenêtre */
+    }
+
+    /* ── BARRE DU HAUT ────────────────────────────────────────── */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 58px;
+      display: flex;           /* flexbox = disposition en ligne      */
+      align-items: center;     /* centré verticalement                */
+      justify-content: space-between; /* espace entre les éléments   */
+      position: sticky;        /* reste en haut quand on scrolle      */
+      top: 0;
+      z-index: 100;            /* passe au-dessus des autres éléments */
+    }
+
+    .topbar-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .topbar-brand span { color: var(--coral); }
+
+    .topbar-back {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s; /* transition douce au survol */
+    }
+    .topbar-back:hover { color: var(--coral); }
+
+    /* ── MISE EN PAGE PRINCIPALE ─────────────────────────────── */
+    .page {
+      max-width: 780px;        /* largeur maximum du contenu          */
+      margin: 0 auto;          /* centré horizontalement              */
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ── EN-TÊTE DE LA PAGE ──────────────────────────────────── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .page-header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      /* clamp(min, idéal, max) → taille responsive automatique */
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .page-header p {
+      color: var(--text2);
+      font-size: 0.95rem;
+    }
+    .page-header .highlight { color: var(--coral); }
+
+    /* ── INDICATEUR D'ÉTAPES ─────────────────────────────────── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 0.03em;
+    }
+    .step-item.active { color: var(--coral); }
+    .step-dot {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .step-item.active .step-dot { background: var(--coral); color: white; }
+    .step-sep { width: 24px; height: 1px; background: var(--border); margin: 0 0.25rem; }
+
+    /* ── CARTE DU FORMULAIRE ─────────────────────────────────── */
+    .form-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden; /* les coins arrondis coupent le contenu qui dépasse */
+    }
+
+    /* ── FIELDSET : regroupe des champs liés ─────────────────────
+       En HTML, <fieldset> crée une boîte autour de champs liés.
+       <legend> est le titre de ce groupe.
+       On enlève le style par défaut (bordure laide) et on le
+       remplace par notre propre design.
+    ─────────────────────────────────────────────────────────── */
+    fieldset {
+      border: none;        /* supprime la bordure grise par défaut */
+      padding: 2rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    fieldset:last-of-type { border-bottom: none; }
+
+    /* La légende = titre du fieldset */
+    legend {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      margin-bottom: 1.75rem;
+      /* float:left + width:100% → trick pour que legend prenne toute la largeur */
+      float: left;
+    }
+    legend + * { clear: both; } /* annule le float après la legend */
+
+    .legend-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--coral-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .legend-text h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .legend-text p {
+      font-size: 0.78rem;
+      color: var(--text3);
+      margin-top: 0.1rem;
+    }
+
+    /* ── GRILLE DE CHAMPS ────────────────────────────────────────
+       display: grid → disposition en grille
+       grid-template-columns: 1fr 1fr → 2 colonnes égales
+       gap → espacement entre les cellules
+    ─────────────────────────────────────────────────────────── */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    /* Sur mobile (écran < 580px), une seule colonne */
+    @media (max-width: 580px) {
+      .field-grid { grid-template-columns: 1fr; }
+      fieldset { padding: 1.5rem; }
+    }
+
+    /* .full → occupe les 2 colonnes de la grille */
+    .field-grid .full { grid-column: 1 / -1; }
+
+    /* ── CHAMP INDIVIDUEL ────────────────────────────────────── */
+    .field {
+      display: flex;
+      flex-direction: column; /* empile label puis input */
+      gap: 0.35rem;
+    }
+
+    /* ── LABEL : texte au-dessus du champ ───────────────────── */
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    /* L'étoile rouge qui indique un champ obligatoire */
+    .req {
+      color: var(--red);
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+
+    /* ── INPUTS, SELECT, TEXTAREA ────────────────────────────────
+       Ces règles s'appliquent à TOUS les champs de saisie.
+       On leur donne un style uniforme et cohérent.
+    ─────────────────────────────────────────────────────────── */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="password"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none; /* supprime le contour bleu par défaut du navigateur */
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      /* transition → changement visuel progressif (pas brutal) */
+    }
+
+    /* Quand le champ est actif (on clique dessus) → :focus */
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--border-focus);   /* bordure corail        */
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(232,96,60,0.12); /* halo orange doux */
+    }
+
+    /* Champ valide (HTML5 vérifie automatiquement) → :valid */
+    input:valid:not(:placeholder-shown):not([type="file"]):not([type="date"]):not([type="checkbox"]):not([type="radio"]) {
+      border-color: var(--green);
+    }
+
+    /* Champ invalide après saisie → :invalid:not(:placeholder-shown) */
+    input:invalid:not(:placeholder-shown) {
+      border-color: var(--red);
+    }
+
+    textarea { resize: vertical; min-height: 110px; }
+    select { cursor: pointer; }
+
+    /* ── TEXTE D'AIDE SOUS LES CHAMPS ───────────────────────── */
+    .field-hint {
+      font-size: 0.73rem;
+      color: var(--text3);
+      line-height: 1.4;
+    }
+    .field-hint.error { color: var(--red); }
+    .field-hint.success { color: var(--green); }
+
+    /* Compteur de caractères (pour textarea) */
+    .char-count {
+      text-align: right;
+      font-size: 0.72rem;
+      color: var(--text3);
+    }
+
+    /* ── MOT DE PASSE : wrapper pour le bouton afficher/masquer */
+    .pwd-wrap { position: relative; }
+    .pwd-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text3);
+      padding: 0.2rem;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+    .pwd-toggle:hover { color: var(--coral); }
+
+    /* ── INDICATEUR DE FORCE DU MOT DE PASSE ────────────────── */
+    .strength-bars {
+      display: flex;
+      gap: 4px;
+      margin-top: 0.4rem;
+    }
+    .strength-bar {
+      flex: 1;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    /* JavaScript ajoute les classes strength-1/2/3/4 sur .strength-bars */
+    .strength-bars.s1 .strength-bar:nth-child(1) { background: var(--red); }
+    .strength-bars.s2 .strength-bar:nth-child(-n+2) { background: #f59e0b; }
+    .strength-bars.s3 .strength-bar:nth-child(-n+3) { background: #84cc16; }
+    .strength-bars.s4 .strength-bar { background: var(--green); }
+
+    .strength-label {
+      font-size: 0.72rem;
+      color: var(--text3);
+      margin-top: 0.2rem;
+      min-height: 1rem;
+    }
+
+    /* ── RADIO BUTTONS : choix du genre ─────────────────────────
+       On cache le bouton radio natif (peu joli) et on crée
+       notre propre style avec des "cartes" cliquables.
+    ─────────────────────────────────────────────────────────── */
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    /* Le <label> englobe l'<input type="radio"> → tout est cliquable */
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 100px; /* cercle = pilule */
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all 0.2s;
+      user-select: none; /* empêche la sélection du texte au clic */
+    }
+    .radio-label:hover {
+      border-color: var(--coral);
+      background: var(--coral-light);
+      color: var(--coral);
+    }
+    /* Quand le radio est coché → :has() vérifie si l'input fils est checked */
+    .radio-label:has(input:checked) {
+      border-color: var(--coral);
+      background: var(--coral-light);
+      color: var(--coral);
+      font-weight: 600;
+    }
+    /* Cache le radio natif (remplacé par le style de la carte) */
+    .radio-label input[type="radio"] {
+      width: 16px; height: 16px;
+      accent-color: var(--coral); /* couleur du bouton radio natif */
+      flex-shrink: 0;
+    }
+
+    /* ── CHECKBOXES : centres d'intérêt ─────────────────────────
+       Même principe que les radios : on stylise le <label>
+       pour créer des cartes cliquables.
+    ─────────────────────────────────────────────────────────── */
+    .check-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .check-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: var(--text2);
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .check-label:hover {
+      border-color: var(--coral);
+      background: var(--coral-light);
+    }
+    .check-label:has(input:checked) {
+      border-color: var(--coral);
+      background: var(--coral-light);
+      color: var(--coral);
+      font-weight: 600;
+    }
+    .check-label input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: var(--coral);
+      flex-shrink: 0;
+    }
+
+    /* ── UPLOAD DE FICHIER ───────────────────────────────────────
+       On cache l'input file natif (peu joli) et on crée
+       une zone de dépôt visuelle cliquable avec un <label>.
+    ─────────────────────────────────────────────────────────── */
+    .file-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      /* label cliquable qui active l'input file caché */
+    }
+    .file-zone:hover {
+      border-color: var(--coral);
+      background: var(--coral-light);
+    }
+    .file-zone-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .file-zone p { font-size: 0.85rem; color: var(--text2); }
+    .file-zone strong { color: var(--coral); }
+    /* L'input file est caché → c'est le label qui le déclenche */
+    .file-zone input[type="file"] { display: none; }
+    .file-name {
+      font-size: 0.8rem;
+      color: var(--green);
+      margin-top: 0.5rem;
+      min-height: 1.2rem;
+    }
+
+    /* ── CASE À COCHER CGU ──────────────────────────────────── */
+    .cgu-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1.25rem;
+      background: var(--coral-light);
+      border: 1.5px solid rgba(232,96,60,0.2);
+      border-radius: var(--radius);
+    }
+    .cgu-wrap input[type="checkbox"] {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--coral);
+      cursor: pointer;
+    }
+    .cgu-wrap label {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .cgu-wrap a { color: var(--coral); text-decoration: underline; }
+
+    /* ── PIED DU FORMULAIRE (bouton submit) ──────────────────── */
+    .form-footer {
+      padding: 1.75rem 2.5rem;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .form-footer-note {
+      font-size: 0.78rem;
+      color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* ── BOUTON PRINCIPAL ────────────────────────────────────── */
+    .btn-submit {
+      background: var(--coral);
+      color: white;
+      border: none;
+      border-radius: 100px;
+      padding: 0.85rem 2.25rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-submit:hover {
+      background: var(--coral-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(232,96,60,0.3);
+    }
+    .btn-submit:active { transform: none; }
+
+    /* ── BANNIÈRE DE SUCCÈS ──────────────────────────────────── */
+    .success-banner {
+      display: none; /* caché par défaut, affiché par JavaScript */
+      background: var(--green-light);
+      border: 1.5px solid #86efac;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .success-banner.show { display: block; }
+    .success-banner .success-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .success-banner h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      color: var(--green);
+      margin-bottom: 0.25rem;
+    }
+    .success-banner p { color: #166534; font-size: 0.9rem; }
+
+    /* ── LIEN RETOUR ─────────────────────────────────────────── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .back-link:hover { color: var(--coral); }
+
+  </style>
+</head>
+
+<!--
+  ════════════════════════════════════════════════════════════
+  BODY : tout le contenu visible de la page
+  ════════════════════════════════════════════════════════════
+-->
+<body>
+
+  <!-- ── BARRE DU HAUT ──────────────────────────────────────── -->
+  <div class="topbar" role="banner">
+    <span class="topbar-brand">TP2 <span>—</span> Formulaire d'inscription</span>
+    <a href="../index.html" class="topbar-back" aria-label="Retour à l'accueil">
+      ← Retour
+    </a>
+  </div>
+
+  <!-- ── CONTENU PRINCIPAL ──────────────────────────────────── -->
+  <!--
+    <main> = balise sémantique pour le contenu central.
+    id="main-content" → utile pour les lecteurs d'écran.
+  -->
+  <main class="page" id="main-content">
+
+    <!-- En-tête de la page -->
+    <header class="page-header">
+      <h1>Créer un <span class="highlight">compte</span></h1>
+      <p>Remplissez tous les champs requis pour finaliser votre inscription.</p>
+    </header>
+
+    <!-- Indicateur d'étapes (décoratif) -->
+    <nav class="steps" aria-label="Étapes d'inscription">
+      <div class="step-item active">
+        <span class="step-dot">1</span>
+        <span>Infos perso.</span>
+      </div>
+      <div class="step-sep" aria-hidden="true"></div>
+      <div class="step-item active">
+        <span class="step-dot">2</span>
+        <span>Sécurité</span>
+      </div>
+      <div class="step-sep" aria-hidden="true"></div>
+      <div class="step-item active">
+        <span class="step-dot">3</span>
+        <span>Préférences</span>
+      </div>
+      <div class="step-sep" aria-hidden="true"></div>
+      <div class="step-item">
+        <span class="step-dot">4</span>
+        <span>Confirmation</span>
+      </div>
+    </nav>
+
+    <!--
+    ═══════════════════════════════════════════════════════════
+      FORMULAIRE PRINCIPAL
+      ───────────────────
+      action=""    → URL où envoyer les données (vide = même page)
+      method="post"→ méthode HTTP (post = données cachées dans la requête)
+      novalidate   → on gère la validation nous-mêmes en JavaScript
+                     (pour afficher nos propres messages d'erreur)
+    ═══════════════════════════════════════════════════════════
+    -->
+    <form
+      id="inscription-form"
+      action=""
+      method="post"
+      novalidate
+      aria-label="Formulaire d'inscription complet"
+    >
+      <div class="form-card">
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 1 : INFORMATIONS PERSONNELLES
+          ───────────────────────────────────────────────────
+          <fieldset> regroupe des champs liés thématiquement.
+          <legend>   est le titre visible de ce groupe.
+          C'est obligatoire pour l'accessibilité !
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend>
+            <span class="legend-icon" aria-hidden="true">👤</span>
+            <div class="legend-text">
+              <h2>Informations personnelles</h2>
+              <p>Vos informations de base</p>
+            </div>
+          </legend>
+
+          <div class="field-grid">
+
+            <!-- CHAMP : Nom de famille -->
+            <!--
+              for="nom" → lie ce <label> à l'<input id="nom">
+              Clic sur le label → active le champ. Obligatoire !
+            -->
+            <div class="field">
+              <label for="nom">
+                Nom <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <input
+                type="text"
+                id="nom"
+                name="nom"
+                placeholder="Ex : Elhattab"
+                required
+                minlength="2"
+                maxlength="50"
+                autocomplete="family-name"
+                aria-required="true"
+                aria-describedby="nom-hint"
+              >
+              <!--
+                required       → champ obligatoire (HTML5)
+                minlength="2"  → minimum 2 caractères
+                autocomplete   → aide le navigateur à auto-remplir
+                aria-required  → annonce aux lecteurs d'écran
+                aria-describedby → lie ce champ à son texte d'aide
+              -->
+              <span class="field-hint" id="nom-hint">Entre 2 et 50 caractères</span>
+            </div>
+
+            <!-- CHAMP : Prénom -->
+            <div class="field">
+              <label for="prenom">
+                Prénom <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <input
+                type="text"
+                id="prenom"
+                name="prenom"
+                placeholder="Ex : Nada"
+                required
+                minlength="2"
+                maxlength="50"
+                autocomplete="given-name"
+                aria-required="true"
+              >
+            </div>
+
+            <!-- CHAMP : Email -->
+            <!--
+              type="email" → HTML5 vérifie automatiquement
+              le format : quelquechose@domaine.extension
+            -->
+            <div class="field">
+              <label for="email">
+                Adresse e-mail <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="nada@exemple.ma"
+                required
+                autocomplete="email"
+                aria-required="true"
+                aria-describedby="email-hint"
+              >
+              <span class="field-hint" id="email-hint">Format : nom@domaine.extension</span>
+            </div>
+
+            <!-- CHAMP : Téléphone -->
+            <!--
+              type="tel"    → indique un numéro de téléphone
+              pattern="..." → expression régulière (regex) qui valide le format.
+              Explication du pattern :
+                ^              → début de la chaîne
+                (0[67][0-9]{8} → commence par 06 ou 07, suivi de 8 chiffres
+                |              → OU
+                \+33[67][0-9]{8}) → format international +33 6/7 + 8 chiffres
+                $              → fin de la chaîne
+            -->
+            <div class="field">
+              <label for="telephone">
+                Téléphone <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <input
+                type="tel"
+                id="telephone"
+                name="telephone"
+                placeholder="06 12 34 56 78"
+                required
+                pattern="^(0[67][0-9]{8}|\+33[67][0-9]{8}|0[67]\s?[0-9]{2}\s?[0-9]{2}\s?[0-9]{2}\s?[0-9]{2})$"
+                autocomplete="tel"
+                aria-required="true"
+                aria-describedby="tel-hint"
+              >
+              <span class="field-hint" id="tel-hint">Format : 06XXXXXXXX ou 07XXXXXXXX</span>
+            </div>
+
+            <!-- CHAMP : Date de naissance -->
+            <!--
+              type="date" → affiche un sélecteur de date natif
+              max="..."   → date maximum autorisée.
+              Pour age min 18 ans : la date max = aujourd'hui - 18 ans.
+              On calcule cette date avec JavaScript (voir bas de page).
+            -->
+            <div class="field">
+              <label for="ddn">
+                Date de naissance <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <input
+                type="date"
+                id="ddn"
+                name="ddn"
+                required
+                autocomplete="bday"
+                aria-required="true"
+                aria-describedby="ddn-hint"
+              >
+              <!-- max sera défini par JavaScript pour date - 18 ans -->
+              <span class="field-hint" id="ddn-hint">Vous devez avoir au moins 18 ans</span>
+            </div>
+
+            <!-- CHAMP : Pays (select + datalist) -->
+            <!--
+              <select> → liste déroulante classique
+              <datalist> → suggestions pour un input text (pas un select)
+              Ici on utilise les deux : select pour les pays courants,
+              et un input + datalist pour permettre de taper un autre pays.
+            -->
+            <div class="field">
+              <label for="pays">
+                Pays <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <!--
+                On utilise un input + datalist = champ texte avec suggestions.
+                L'utilisateur peut soit choisir dans la liste, soit taper librement.
+              -->
+              <input
+                type="text"
+                id="pays"
+                name="pays"
+                list="pays-liste"
+                placeholder="Tapez ou choisissez..."
+                required
+                autocomplete="country-name"
+                aria-required="true"
+              >
+              <!--
+                <datalist id="pays-liste"> → liste de suggestions.
+                id doit correspondre à l'attribut list de l'input.
+              -->
+              <datalist id="pays-liste">
+                <option value="France">
+                <option value="Maroc">
+                <option value="Algérie">
+                <option value="Tunisie">
+                <option value="Belgique">
+                <option value="Canada">
+                <option value="Sénégal">
+                <option value="Côte d'Ivoire">
+                <option value="Espagne">
+                <option value="Allemagne">
+                <option value="Italie">
+                <option value="Pays-Bas">
+              </datalist>
+            </div>
+
+          </div><!-- fin .field-grid -->
+        </fieldset>
+
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 2 : SÉCURITÉ DU COMPTE
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend>
+            <span class="legend-icon" aria-hidden="true">🔒</span>
+            <div class="legend-text">
+              <h2>Sécurité du compte</h2>
+              <p>Choisissez un mot de passe fort</p>
+            </div>
+          </legend>
+
+          <div class="field-grid">
+
+            <!-- CHAMP : Mot de passe -->
+            <!--
+              type="password" → masque les caractères saisis
+              pattern="..."   → regex pour valider la complexité :
+                (?=.*[A-Z]) → doit contenir au moins 1 majuscule
+                (?=.*\d)    → doit contenir au moins 1 chiffre
+                .{8,}       → longueur minimum 8 caractères
+            -->
+            <div class="field full">
+              <label for="password">
+                Mot de passe <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <div class="pwd-wrap">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                  minlength="8"
+                  pattern="(?=.*[A-Z])(?=.*\d).{8,}"
+                  autocomplete="new-password"
+                  aria-required="true"
+                  aria-describedby="pwd-hint pwd-force-label"
+                >
+                <!-- Bouton pour afficher/masquer le mot de passe -->
+                <button
+                  type="button"
+                  class="pwd-toggle"
+                  id="pwd-toggle"
+                  aria-label="Afficher ou masquer le mot de passe"
+                >
+                  <!-- Icône "œil" SVG -->
+                  <svg id="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+              <!-- Barres de force du mot de passe (4 barres) -->
+              <div class="strength-bars" id="strength-bars" aria-hidden="true">
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+                <div class="strength-bar"></div>
+              </div>
+              <span class="strength-label" id="pwd-force-label" role="status" aria-live="polite"></span>
+              <span class="field-hint" id="pwd-hint">
+                Minimum 8 caractères, 1 majuscule et 1 chiffre
+              </span>
+            </div>
+
+            <!-- CHAMP : Confirmation du mot de passe -->
+            <div class="field full">
+              <label for="password-confirm">
+                Confirmer le mot de passe <span class="req" aria-label="obligatoire">*</span>
+              </label>
+              <input
+                type="password"
+                id="password-confirm"
+                name="password-confirm"
+                placeholder="••••••••"
+                required
+                autocomplete="new-password"
+                aria-required="true"
+                aria-describedby="confirm-hint"
+              >
+              <span class="field-hint" id="confirm-hint"></span>
+            </div>
+
+          </div>
+        </fieldset>
+
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 3 : GENRE (radio buttons)
+          ───────────────────────────────────────────────────
+          <input type="radio"> → choix unique dans un groupe.
+          Tous les radios d'un groupe ont le MÊME name="genre".
+          Un seul peut être coché à la fois.
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend>
+            <span class="legend-icon" aria-hidden="true">🙋</span>
+            <div class="legend-text">
+              <h2>Genre</h2>
+              <p>Optionnel</p>
+            </div>
+          </legend>
+
+          <!--
+            role="radiogroup" → indique aux lecteurs d'écran que
+            c'est un groupe de boutons radio liés.
+          -->
+          <div
+            class="radio-group"
+            role="radiogroup"
+            aria-label="Sélection du genre"
+          >
+            <!-- Chaque <label> contient son <input type="radio"> -->
+            <label class="radio-label">
+              <input type="radio" name="genre" value="femme">
+              👩 Femme
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genre" value="homme">
+              👨 Homme
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genre" value="autre">
+              🧑 Autre
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genre" value="non-specifie">
+              🤐 Préfère ne pas préciser
+            </label>
+          </div>
+        </fieldset>
+
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 4 : CENTRES D'INTÉRÊT (checkboxes)
+          ───────────────────────────────────────────────────
+          <input type="checkbox"> → choix multiple.
+          Contrairement aux radios, plusieurs peuvent être
+          cochés en même temps.
+          Chaque checkbox a un name différent ou la même name[]
+          pour envoyer un tableau de valeurs.
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend>
+            <span class="legend-icon" aria-hidden="true">⭐</span>
+            <div class="legend-text">
+              <h2>Centres d'intérêt</h2>
+              <p>Sélectionnez vos domaines de prédilection</p>
+            </div>
+          </legend>
+
+          <div
+            class="check-group"
+            role="group"
+            aria-label="Centres d'intérêt"
+          >
+            <!-- name="interets[]" → envoie un tableau de valeurs -->
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="big-data">
+              📊 Big Data
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="cloud">
+              ☁️ Cloud Computing
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="ia">
+              🤖 Intelligence Artificielle
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="data-eng">
+              🔧 Data Engineering
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="python">
+              🐍 Python
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="sql">
+              🗄️ SQL / Bases de données
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="dev-web">
+              🌐 Développement Web
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="interets[]" value="securite">
+              🛡️ Cybersécurité
+            </label>
+          </div>
+        </fieldset>
+
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 5 : BIOGRAPHIE
+          ───────────────────────────────────────────────────
+          <textarea> → zone de texte multi-lignes.
+          maxlength="500" → limite de 500 caractères.
+          rows="5"        → hauteur initiale (5 lignes).
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend>
+            <span class="legend-icon" aria-hidden="true">✍️</span>
+            <div class="legend-text">
+              <h2>Biographie</h2>
+              <p>Parlez-nous de vous</p>
+            </div>
+          </legend>
+
+          <div class="field">
+            <label for="bio">
+              Votre biographie
+              <span style="font-weight:400;color:var(--text3);font-size:.75rem">(optionnel)</span>
+            </label>
+            <textarea
+              id="bio"
+              name="bio"
+              maxlength="500"
+              rows="5"
+              placeholder="Décrivez votre parcours, vos passions, vos objectifs professionnels…"
+              autocomplete="off"
+              aria-describedby="bio-count"
+            ></textarea>
+            <!-- Le compteur de caractères est mis à jour par JavaScript -->
+            <span class="char-count" id="bio-count" aria-live="polite">0 / 500</span>
+          </div>
+        </fieldset>
+
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 6 : PHOTO DE PROFIL
+          ───────────────────────────────────────────────────
+          <input type="file"> → permet de choisir un fichier.
+          accept="image/*"    → filtre pour n'accepter que les images.
+          On cache l'input et on utilise un <label> stylisé
+          comme zone de clic pour une meilleure apparence.
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend>
+            <span class="legend-icon" aria-hidden="true">📷</span>
+            <div class="legend-text">
+              <h2>Photo de profil</h2>
+              <p>JPG, PNG ou WebP · Max 2 Mo</p>
+            </div>
+          </legend>
+
+          <!--
+            for="photo" → ce label est lié à l'input id="photo".
+            Cliquer sur ce label ouvre la fenêtre de sélection de fichier,
+            même si l'input est caché (display:none).
+          -->
+          <label class="file-zone" for="photo" aria-describedby="photo-name">
+            <div class="file-zone-icon" aria-hidden="true">📤</div>
+            <p>
+              <strong>Cliquez pour choisir</strong> votre photo
+            </p>
+            <p style="font-size:.78rem;color:var(--text3);margin-top:.25rem">
+              ou glissez-déposez ici
+            </p>
+            <!-- Input caché : c'est lui qui fait vraiment l'upload -->
+            <input
+              type="file"
+              id="photo"
+              name="photo"
+              accept="image/jpeg,image/png,image/webp"
+              aria-label="Choisir une photo de profil"
+            >
+          </label>
+          <!-- Nom du fichier choisi (affiché par JavaScript) -->
+          <p class="file-name" id="photo-name" aria-live="polite"></p>
+        </fieldset>
+
+
+        <!-- ═══════════════════════════════════════════════════
+          FIELDSET 7 : CONDITIONS GÉNÉRALES D'UTILISATION
+          ───────────────────────────────────────────────────
+          Checkbox obligatoire → required.
+          Si non cochée, le formulaire ne peut pas être soumis.
+        ════════════════════════════════════════════════════ -->
+        <fieldset>
+          <legend style="margin-bottom:1rem">
+            <span class="legend-icon" aria-hidden="true">📋</span>
+            <div class="legend-text">
+              <h2>Conditions d'utilisation</h2>
+              <p>Lecture et acceptation obligatoires</p>
+            </div>
+          </legend>
+
+          <div class="cgu-wrap">
+            <!--
+              required → cette checkbox doit être cochée pour valider.
+              Si elle ne l'est pas, le formulaire affichera une erreur.
+            -->
+            <input
+              type="checkbox"
+              id="cgu"
+              name="cgu"
+              required
+              aria-required="true"
+            >
+            <label for="cgu">
+              J'ai lu et j'accepte les
+              <a href="#" onclick="return false">Conditions Générales d'Utilisation</a>
+              et la
+              <a href="#" onclick="return false">Politique de Confidentialité</a>
+              de la plateforme.
+              <strong>Cette case est obligatoire.</strong>
+              <span class="req">*</span>
+            </label>
+          </div>
+        </fieldset>
+
+
+        <!-- ── PIED DU FORMULAIRE : bouton d'envoi ─────────── -->
+        <div class="form-footer">
+          <p class="form-footer-note">
+            <!-- Cadenas SVG : icône de sécurité -->
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Vos données sont sécurisées et chiffrées
+          </p>
+
+          <!--
+            type="submit" → ce bouton soumet le formulaire.
+            Au clic, l'événement "submit" est déclenché sur le <form>.
+            JavaScript intercepte cet événement pour valider avant d'envoyer.
+          -->
+          <button type="submit" class="btn-submit" id="btn-submit">
+            Créer mon compte
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+
+      </div><!-- fin .form-card -->
+    </form>
+
+    <!-- ── BANNIÈRE DE SUCCÈS (cachée par défaut) ──────────── -->
+    <!--
+      role="alert" → les lecteurs d'écran l'annoncent automatiquement
+      aria-live="assertive" → priorité haute pour l'annonce vocale
+    -->
+    <div
+      class="success-banner"
+      id="success-banner"
+      role="alert"
+      aria-live="assertive"
+    >
+      <div class="success-icon" aria-hidden="true">✅</div>
+      <h3>Inscription réussie !</h3>
+      <p>Votre compte a été créé avec succès. Un e-mail de confirmation vous a été envoyé.</p>
+    </div>
+
+    <!-- Lien retour -->
+    <div style="text-align:center;margin-top:2rem">
+      <a href="../index.html" class="back-link">← Retour à l'accueil</a>
+    </div>
+
+  </main><!-- fin <main> -->
+
+
+  <!--
+  ══════════════════════════════════════════════════════════════
+    JAVASCRIPT : les comportements interactifs de la page
+    ────────────────────────────────────────────────────────────
+    JavaScript s'exécute dans le navigateur.
+    Il est placé juste avant </body> pour s'exécuter APRÈS
+    que le HTML soit chargé (sinon les éléments n'existent pas
+    encore quand le JS essaie de les trouver).
+
+    Dans ce TP, JavaScript gère :
+    1. La date max (âge minimum 18 ans)
+    2. Le compteur de caractères de la biographie
+    3. L'affichage du nom du fichier uploadé
+    4. L'affichage/masquage du mot de passe
+    5. L'indicateur de force du mot de passe
+    6. La validation de la confirmation du mot de passe
+    7. La validation finale et l'affichage du succès
+  ══════════════════════════════════════════════════════════════
+  -->
+  <script>
+
+    // ──────────────────────────────────────────────────────────
+    // 1. DATE MAX : l'utilisateur doit avoir 18 ans minimum
+    //    On calcule : date d'aujourd'hui - 18 ans
+    // ──────────────────────────────────────────────────────────
+    const champDate = document.getElementById('ddn');
+    // Date d'aujourd'hui
+    const maintenant = new Date();
+    // On retire 18 ans
+    maintenant.setFullYear(maintenant.getFullYear() - 18);
+    // Format YYYY-MM-DD requis par type="date"
+    const dateMax = maintenant.toISOString().split('T')[0];
+    champDate.setAttribute('max', dateMax);
+    // Exemple : si on est en 2025, la date max sera 2007-XX-XX
+
+
+    // ──────────────────────────────────────────────────────────
+    // 2. COMPTEUR DE CARACTÈRES (biographie)
+    //    À chaque frappe, on met à jour le compteur.
+    // ──────────────────────────────────────────────────────────
+    const bio       = document.getElementById('bio');
+    const bioCount  = document.getElementById('bio-count');
+
+    // 'input' = événement déclenché à chaque changement dans le champ
+    bio.addEventListener('input', function() {
+      const nb = bio.value.length; // nombre de caractères actuels
+      bioCount.textContent = nb + ' / 500';
+      // On change la couleur si on approche de la limite
+      bioCount.style.color = nb > 450 ? 'var(--red)' : 'var(--text3)';
+    });
+
+
+    // ──────────────────────────────────────────────────────────
+    // 3. AFFICHAGE DU NOM DU FICHIER UPLOADÉ
+    // ──────────────────────────────────────────────────────────
+    const inputPhoto = document.getElementById('photo');
+    const nomPhoto   = document.getElementById('photo-name');
+
+    inputPhoto.addEventListener('change', function() {
+      // inputPhoto.files est la liste des fichiers sélectionnés
+      if (inputPhoto.files.length > 0) {
+        const fichier = inputPhoto.files[0]; // premier fichier
+        nomPhoto.textContent = '✓ ' + fichier.name;
+
+        // Vérification de la taille (max 2 Mo = 2 * 1024 * 1024 octets)
+        if (fichier.size > 2 * 1024 * 1024) {
+          nomPhoto.textContent = '⚠️ Fichier trop grand (max 2 Mo)';
+          nomPhoto.style.color = 'var(--red)';
+          inputPhoto.value = ''; // vide la sélection
+        } else {
+          nomPhoto.style.color = 'var(--green)';
+        }
+      } else {
+        nomPhoto.textContent = '';
+      }
+    });
+
+
+    // ──────────────────────────────────────────────────────────
+    // 4. AFFICHER / MASQUER LE MOT DE PASSE
+    // ──────────────────────────────────────────────────────────
+    const inputPwd  = document.getElementById('password');
+    const btnToggle = document.getElementById('pwd-toggle');
+    const iconOeil  = document.getElementById('eye-icon');
+
+    btnToggle.addEventListener('click', function() {
+      if (inputPwd.type === 'password') {
+        // Afficher : on change le type en "text"
+        inputPwd.type = 'text';
+        btnToggle.setAttribute('aria-label', 'Masquer le mot de passe');
+        // On change l'icône : œil barré
+        iconOeil.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+          <line x1="1" y1="1" x2="23" y2="23"/>
+        `;
+      } else {
+        // Masquer : on remet type="password"
+        inputPwd.type = 'password';
+        btnToggle.setAttribute('aria-label', 'Afficher le mot de passe');
+        iconOeil.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        `;
+      }
+    });
+
+
+    // ──────────────────────────────────────────────────────────
+    // 5. INDICATEUR DE FORCE DU MOT DE PASSE
+    //    4 niveaux : Faible, Moyen, Bon, Excellent
+    // ──────────────────────────────────────────────────────────
+    const barresForce = document.getElementById('strength-bars');
+    const labelForce  = document.getElementById('pwd-force-label');
+    const niveaux     = ['', 'Faible', 'Moyen', 'Bon', 'Excellent'];
+    const couleursLabel = ['', 'var(--red)', '#f59e0b', '#84cc16', 'var(--green)'];
+
+    inputPwd.addEventListener('input', function() {
+      const val = inputPwd.value;
+      let score = 0;
+
+      // Règle 1 : au moins 8 caractères
+      if (val.length >= 8) score++;
+      // Règle 2 : au moins une majuscule
+      if (/[A-Z]/.test(val)) score++;
+      // Règle 3 : au moins un chiffre
+      if (/[0-9]/.test(val)) score++;
+      // Règle 4 : au moins un caractère spécial
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      // On applique la classe CSS correspondante (s1, s2, s3 ou s4)
+      barresForce.className = 'strength-bars' + (val.length > 0 ? ' s' + score : '');
+      // On met à jour le texte et la couleur
+      labelForce.textContent = val.length > 0 ? niveaux[score] : '';
+      labelForce.style.color = val.length > 0 ? couleursLabel[score] : '';
+    });
+
+
+    // ──────────────────────────────────────────────────────────
+    // 6. VALIDATION DE LA CONFIRMATION DU MOT DE PASSE
+    //    Vérifie que les deux mots de passe sont identiques.
+    // ──────────────────────────────────────────────────────────
+    const inputConfirm = document.getElementById('password-confirm');
+    const hintConfirm  = document.getElementById('confirm-hint');
+
+    inputConfirm.addEventListener('input', verifierConfirmation);
+    inputPwd.addEventListener('input', function() {
+      // Si l'utilisateur modifie le premier mot de passe,
+      // on re-vérifie la confirmation aussi
+      if (inputConfirm.value.length > 0) {
+        verifierConfirmation();
+      }
+    });
+
+    function verifierConfirmation() {
+      if (inputConfirm.value === '') {
+        hintConfirm.textContent = '';
+        inputConfirm.setCustomValidity('');
+        return;
+      }
+
+      if (inputConfirm.value !== inputPwd.value) {
+        // setCustomValidity() → message d'erreur personnalisé HTML5
+        inputConfirm.setCustomValidity('Les mots de passe ne correspondent pas.');
+        hintConfirm.textContent = '✗ Les mots de passe ne correspondent pas.';
+        hintConfirm.className = 'field-hint error';
+      } else {
+        // Vide = pas d'erreur
+        inputConfirm.setCustomValidity('');
+        hintConfirm.textContent = '✓ Les mots de passe correspondent.';
+        hintConfirm.className = 'field-hint success';
+      }
+    }
+
+
+    // ──────────────────────────────────────────────────────────
+    // 7. SOUMISSION DU FORMULAIRE
+    //    On intercepte le clic sur "Envoyer" pour :
+    //    a) Valider tous les champs avec checkValidity()
+    //    b) Afficher les erreurs si nécessaire
+    //    c) Afficher le succès si tout est valide
+    // ──────────────────────────────────────────────────────────
+    const form           = document.getElementById('inscription-form');
+    const banniereSucces = document.getElementById('success-banner');
+
+    form.addEventListener('submit', function(evenement) {
+      // evenement.preventDefault() → empêche l'envoi HTTP du formulaire
+      // (qui rechargerait la page). On gère tout nous-mêmes.
+      evenement.preventDefault();
+
+      // checkValidity() → renvoie true si TOUS les champs sont valides
+      if (form.checkValidity()) {
+        // ✅ Formulaire valide → on affiche la bannière de succès
+        banniereSucces.classList.add('show');
+        form.style.display = 'none'; // on cache le formulaire
+        banniereSucces.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // ❌ Formulaire invalide → reportValidity() affiche les
+        // messages d'erreur natifs du navigateur sur chaque champ
+        form.reportValidity();
+      }
+    });
+
+  </script>
+
+</body>
+</html>
